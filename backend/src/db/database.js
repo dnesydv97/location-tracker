@@ -12,6 +12,12 @@ async function saveLocation(latitude, longitude) {
   await newLocation.save();
 }
 
+async function getLocations(callback) {
+  const locations = await Location.find();
+  callback(locations);
+}
+
 module.exports = {
   saveLocation,
+  getLocations,
 };

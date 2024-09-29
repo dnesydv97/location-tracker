@@ -1,79 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Location Tracker</title>
-  </head>
-  <body>
-    <h1>Click the link to share your location</h1>
 
-    <!-- Link to click -->
-    <a href="#" id="track-link" onclick="getLocation()"
-      >Click to share your location</a
-    >
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Location Tracker</title>
+</head>
 
-    <p id="output"></p>
+<body>
+  <h1>Click the link to share your location</h1>
 
-    <script>
-      function getLocation() {
-        if (navigator.geolocation) {
-          // Ask for user's location
-          navigator.geolocation.getCurrentPosition(sendLocation, showError);
-        } else {
-          document.getElementById("output").innerHTML =
-            "Geolocation is not supported by this browser.";
-        }
+  <a href="#" id="track-link" onclick="getLocation()">Click to share your location</a>
+
+  <p id="output"></p>
+
+  <script>
+    function getLocation() {
+      if (navigator.geolocation) {
+        // Ask for user's location
+        navigator.geolocation.getCurrentPosition(sendLocation, showError);
+      } else {
+        document.getElementById("output").innerHTML =
+          "Geolocation is not supported by this browser.";
       }
+    }
 
-      function sendLocation(position) {
-        const latitude = position.coords.latitude;
-        const longitude = position.coords.longitude;
+    function sendLocation(position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
 
-        document.getElementById(
-          "output"
-        ).innerHTML = `Latitude: ${latitude}, Longitude: ${longitude}`;
+      document.getElementById("output").innerHTML = `Latitude: ${latitude}, Longitude: ${longitude}`;
 
-        // Send the location to the backend server
-        fetch("http://localhost:3000/api/track-location", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            latitude: latitude,
-            longitude: longitude,
-          }),
+      // Send the location to the backend server
+      fetch("http://localhost:3000/api/track-location", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          latitude: latitude,
+          longitude: longitude,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Success:", data);
         })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("Success:", data);
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-          });
-      }
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+    }
 
-      function showError(error) {
-        switch (error.code) {
-          case error.PERMISSION_DENIED:
-            document.getElementById("output").innerHTML =
-              "User denied the request for Geolocation.";
-            break;
-          case error.POSITION_UNAVAILABLE:
-            document.getElementById("output").innerHTML =
-              "Location information is unavailable.";
-            break;
-          case error.TIMEOUT:
-            document.getElementById("output").innerHTML =
-              "The request to get user location timed out.";
-            break;
-          case error.UNKNOWN_ERROR:
-            document.getElementById("output").innerHTML =
-              "An unknown error occurred.";
-            break;
-        }
+    function showError(error) {
+      switch (error.code) {
+        case error.PERMISSION_DENIED:
+          document.getElementById("output").innerHTML =
+            "User denied the request for Geolocation.";
+          break;
+        case error.POSITION_UNAVAILABLE:
+          document.getElementById("output").innerHTML =
+            "Location information is unavailable.";
+          break;
+        case error.TIMEOUT:
+          document.getElementById("output").innerHTML =
+            "The request to get user location timed out.";
+          break;
+        case error.UNKNOWN_ERROR:
+          document.getElementById("output").innerHTML =
+            "An unknown error occurred.";
+          break;
       }
-    </script>
-  </body>
+    }
+  </script>
+</body>
+
 </html>

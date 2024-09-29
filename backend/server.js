@@ -1,6 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const { saveLocation } = require("./src/db/database");
+const { saveLocation, getLocations } = require("./src/db/database");
 const cors = require("cors");
 
 const app = express();
@@ -31,6 +31,13 @@ app.post("/api/track-location", async (req, res) => {
     console.error("Invalid location data");
     res.status(400).json({ message: "Invalid location data" });
   }
+});
+
+// Get all stored locations (for testing)
+app.get("/api/locations", (req, res) => {
+  getLocations((locations) => {
+    res.json(locations);
+  });
 });
 
 // Start the server
